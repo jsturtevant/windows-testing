@@ -18,7 +18,6 @@
       "count": 1,
       "dnsPrefix": "",
       "vmSize": "Standard_D2_v3",
-      "distro": "ubuntu",
       "extensions": [
         {
           "name": "master_extension"
@@ -43,10 +42,10 @@
       "adminUsername": "azureuser",
       "adminPassword": "replacepassword1234$",
       "sshEnabled": true,
-      "windowsPublisher": "MicrosoftWindowsServer",
-      "windowsOffer": "WindowsServer",
-      "windowsSku": "datacenter-core-2004-with-containers-smalldisk",
-      "imageVersion": "19041.329.2006042019"
+      "windowsPublisher": "microsoft-aks",
+      "windowsOffer": "aks-windows",
+      "windowsSku": "2019-datacenter-core-smalldisk-2006",
+      "imageVersion": "latest"
     },
     "linuxProfile": {
       "adminUsername": "azureuser",
@@ -73,7 +72,7 @@
         "name": "master_extension",
         "version": "v1",
         "extensionParameters": "parameters",
-        "rootURL": "https://raw.githubusercontent.com/kubernetes-sigs/windows-testing/master/",
+        "rootURL": "https://raw.githubusercontent.com/jsturtevant/windows-testing/fix-use-custom-vhd/",
         "script": "win-e2e-master-extension.sh"
       }
     ]
