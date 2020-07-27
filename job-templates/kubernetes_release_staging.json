@@ -130,7 +130,7 @@
       {
         "name": "gmsa-webhook",
         "version": "v1",
-        "rootURL": "https://raw.githubusercontent.com/kubernetes-sigs/windows-testing/master/"
+        "rootURL": "https://raw.githubusercontent.com/jsturtevant/windows-testing/gmsa-add-webhook-deploy/"
       }
     ]
   }
