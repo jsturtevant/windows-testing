@@ -29,6 +29,9 @@
         },
         {
           "name": "gmsa-coredns"
+        },
+        {
+          "name": "gmsa-webhook"
         }
       ]
     },
@@ -121,6 +124,11 @@
       },
       {
         "name": "gmsa-dc",
+        "version": "v1",
+        "rootURL": "https://raw.githubusercontent.com/kubernetes-sigs/windows-testing/master/"
+      },
+      {
+        "name": "gmsa-webhook",
         "version": "v1",
         "rootURL": "https://raw.githubusercontent.com/kubernetes-sigs/windows-testing/master/"
       }
