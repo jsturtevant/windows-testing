@@ -367,15 +367,24 @@ spec:
   location: ${AZURE_LOCATION}
   networkSpec:
     apiServerLB:
+      frontendIPs:
+      - name: lb-private-ip-frontend
+        privateIP: 10.255.0.100
       type: Internal
     subnets:
-    - name: control-plane-subnet
+    - cidrBlocks:
+      - 10.255.0.0/24
+      name: control-plane-subnet
       role: control-plane
-    - name: node-subnet
+    - cidrBlocks:
+      - 10.255.1.0/24
+      name: node-subnet
       natGateway:
         name: node-natgateway
       role: node
     vnet:
+      cidrBlocks:
+      - 10.255.0.0/16
       name: ${AZURE_VNET_NAME:=${CLUSTER_NAME}-vnet}
       peerings:
       - remoteVnetName: ${AKS_VNET_NAME}
@@ -422,7 +431,7 @@ spec:
       sshPublicKey: ${AZURE_SSH_PUBLIC_KEY_B64:=""}
       userAssignedIdentities:
       - providerID: /subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/${CI_RG:=capz-ci}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${USER_IDENTITY:=cloud-provider-user-identity}
-      vmSize: Standard_D2s_v3
+      vmSize: ${AZURE_NODE_MACHINE_TYPE:-"Standard_D2ds_v5"}
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: AzureMachineTemplate

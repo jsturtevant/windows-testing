@@ -175,6 +175,7 @@ create_cluster(){
                 --node-count 1 \
                 --generate-ssh-keys \
                 --vm-set-type VirtualMachineScaleSets \
+                --node-vm-size Standard_D2pds_v5 \
                 --kubernetes-version 1.28.5 \
                 --network-plugin azure \
                 --tags creationTimestamp="$(date -u '+%Y-%m-%dT%H:%M:%SZ')")
@@ -192,6 +193,7 @@ create_cluster(){
                     --node-count 1 \
                     --generate-ssh-keys \
                     --vm-set-type VirtualMachineScaleSets \
+                    --node-vm-size Standard_D2pds_v5 \
                     --kubernetes-version 1.28.5 \
                     --network-plugin azure \
                     --tags creationTimestamp="$(date -u '+%Y-%m-%dT%H:%M:%SZ')")
@@ -503,7 +505,7 @@ log() {
 
 # all test regions must support AvailabilityZones
 get_random_region() {
-    local REGIONS=("australiaeast" "canadacentral" "eastus" "eastus2" "northeurope" "uksouth" "westus2" "northcentralus")
+    local REGIONS=("australiaeast" "eastus" "eastus2" "northeurope" "uksouth" "westus2" )
     echo "${REGIONS[${RANDOM} % ${#REGIONS[@]}]}"
 }
 
