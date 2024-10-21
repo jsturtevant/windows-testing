@@ -348,6 +348,8 @@ spec:
     name: cluster-identity
   location: ${AZURE_LOCATION}
   networkSpec:
+    apiServerLB:
+      type: Internal
     subnets:
     - name: control-plane-subnet
       role: control-plane
