@@ -33,6 +33,7 @@ main() {
     export CAPI_VERSION="${CAPI_VERSION:-"v1.7.2"}"
     export HELM_VERSION=v3.15.2
     export TOOLS_BIN_DIR="${TOOLS_BIN_DIR:-$SCRIPT_ROOT/tools/bin}"
+    export ADDITIONAL_ASO_CRDS=network.azure.com/LoadBalancer;network.azure.com/PublicIPAddress
 
     # other config
     export ARTIFACTS="${ARTIFACTS:-${PWD}/_artifacts}"
@@ -232,7 +233,7 @@ create_cluster(){
         kubectl apply -f "$SCRIPT_ROOT"/"${CLUSTER_NAME}-template.yaml"
 
         log "wait for workload cluster config"
-        timeout --foreground 300 bash -c "until $TOOLS_BIN_DIR/clusterctl get kubeconfig ${CLUSTER_NAME} > ${CLUSTER_NAME}.kubeconfig 2>/dev/null; do sleep 3; done"
+        timeout --foreground 500 bash -c "until $TOOLS_BIN_DIR/clusterctl get kubeconfig ${CLUSTER_NAME} > ${CLUSTER_NAME}.kubeconfig 2>/dev/null; do sleep 3; done"
 
         # copy generated template to logs
         mkdir -p "${ARTIFACTS}"/clusters/bootstrap
@@ -257,7 +258,7 @@ create_cluster(){
 
 apply_workload_configuraiton(){
     log "wait for cluster to stabilize"
-    timeout --foreground 300 bash -c "until kubectl get --raw /version --request-timeout 5s > /dev/null 2>&1; do sleep 3; done"
+    timeout --foreground 500 bash -c "until kubectl get --raw /version --request-timeout 5s > /dev/null 2>&1; do sleep 3; done"
     
     log "installing calico"
     "$TOOLS_BIN_DIR"/helm repo add projectcalico https://docs.tigera.io/calico/charts

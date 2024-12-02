@@ -1,0 +1,110 @@
+---
+apiVersion: network.azure.com/v1api20201101
+kind: LoadBalancer
+metadata:
+  creationTimestamp: null
+  name: capz-public-lb
+  annotations:
+    serviceoperator.azure.com/credential-from: capz-conf-a6xnyi-aso-secret
+    serviceoperator.azure.com/operator-namespace: capz-system
+spec:
+  owner: 
+    name: capz-conf-a6xnyi
+  azureName: capz-conf-public-lb
+  backendAddressPools:
+  - loadBalancerBackendAddresses:
+    - name: capz-conf-a6xnyi-control-plane-jhq22
+      virtualNetwork: 
+        reference:
+          armId: /subscriptions/b9d9436a-0c07-4fe8-b779-2c1030bd7997/resourceGroups/capz-conf-a6xnyi/providers/Microsoft.Network/virtualNetworks/capz-conf-a6xnyi-vnet
+      subnet:
+        reference:
+          armId: /subscriptions/b9d9436a-0c07-4fe8-b779-2c1030bd7997/resourceGroups/capz-conf-a6xnyi/providers/Microsoft.Network/virtualNetworks/capz-conf-a6xnyi-vnet/subnets/control-plane-subnet
+      ipAddress: "10.255.0.4"
+    name: capz-conf-public-lb-backendPool
+  frontendIPConfigurations:
+  - name: capz-conf-public-lb-frontEnd
+    privateIPAllocationMethod: Dynamic
+    publicIPAddress:
+      reference:
+        group: network.azure.com
+        kind: PublicIPAddress
+        name: pip-apiserver
+  inboundNatRules:
+  - backendPort: 22
+    enableFloatingIP: false
+    enableTcpReset: false
+    frontendIPConfiguration:
+      reference:
+        armId: /subscriptions/b9d9436a-0c07-4fe8-b779-2c1030bd7997/resourceGroups/capz-conf-a6xnyi/providers/Microsoft.Network/loadBalancers/capz-conf-public-lb/frontendIPConfigurations/capz-conf-public-lb-frontEnd
+    frontendPort: 22
+    idleTimeoutInMinutes: 5
+    name: capz-conf-control-plane-j6fs9
+    protocol: Tcp
+  location: northeurope
+  loadBalancingRules:
+  - backendAddressPool:
+      reference:
+        armId: /subscriptions/b9d9436a-0c07-4fe8-b779-2c1030bd7997/resourceGroups/capz-conf-a6xnyi/providers/Microsoft.Network/loadBalancers/capz-conf-public-lb/backendAddressPools/capz-conf-public-lb-backendPool
+    backendPort: 6443
+    disableOutboundSnat: true
+    enableFloatingIP: false
+    enableTcpReset: false
+    frontendIPConfiguration:
+      reference:
+        armId: /subscriptions/b9d9436a-0c07-4fe8-b779-2c1030bd7997/resourceGroups/capz-conf-a6xnyi/providers/Microsoft.Network/loadBalancers/capz-conf-public-lb/frontendIPConfigurations/capz-conf-public-lb-frontEnd
+    frontendPort: 6443
+    idleTimeoutInMinutes: 4
+    loadDistribution: Default
+    name: LBRuleHTTPS
+    probe:
+      reference:
+        armId: /subscriptions/b9d9436a-0c07-4fe8-b779-2c1030bd7997/resourceGroups/capz-conf-a6xnyi/providers/Microsoft.Network/loadBalancers/capz-conf-public-lb/probes/HTTPSProbe
+    protocol: Tcp
+  outboundRules:
+  - allocatedOutboundPorts: 1024
+    backendAddressPool:
+      reference:
+        armId: /subscriptions/b9d9436a-0c07-4fe8-b779-2c1030bd7997/resourceGroups/capz-conf-a6xnyi/providers/Microsoft.Network/loadBalancers/capz-conf-public-lb/backendAddressPools/capz-conf-public-lb-backendPool
+    enableTcpReset: false
+    frontendIPConfigurations:
+    - reference:
+        armId: /subscriptions/b9d9436a-0c07-4fe8-b779-2c1030bd7997/resourceGroups/capz-conf-a6xnyi/providers/Microsoft.Network/loadBalancers/capz-conf-public-lb/frontendIPConfigurations/capz-conf-public-lb-frontEnd
+    idleTimeoutInMinutes: 4
+    name: OutboundNATAllProtocols
+    protocol: All
+  probes:
+  - intervalInSeconds: 15
+    name: HTTPSProbe
+    numberOfProbes: 4
+    port: 6443
+    protocol: Https
+    requestPath: /readyz
+  sku:
+    name: Standard
+    tier: Regional
+---
+apiVersion: network.azure.com/v1api20201101
+kind: PublicIPAddress
+metadata:
+  name: pip-apiserver
+  annotations:
+    serviceoperator.azure.com/credential-from: capz-conf-a6xnyi-aso-secret
+    serviceoperator.azure.com/operator-namespace: capz-system
+spec:
+  owner:
+    name: capz-conf-a6xnyi
+  azureName: pip-capz-conf-apiserver
+  dnsSettings:
+    domainNameLabel: capz-conf-apiserver
+  idleTimeoutInMinutes: 4
+  location: northeurope
+  publicIPAddressVersion: IPv4
+  publicIPAllocationMethod: Static
+  sku:
+    name: Standard
+    tier: Regional
+  zones:
+  - "1"
+  - "2"
+  - "3"
